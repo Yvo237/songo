@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 4000;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('../client'));
+app.use(express.static('client'));
 
 const game = new SongoGame();
 
