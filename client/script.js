@@ -4,7 +4,20 @@ let state = null;
 let busy = false;
 let polling = false;
 let room = null;
+let isLocal = false;
 const LAB = 'ABCDEFGHIJKLMN';
+
+function showLobby() {
+  document.getElementById('lobby').classList.remove('hidden');
+  document.getElementById('game-container').classList.add('hidden');
+  document.getElementById('main-options').classList.remove('hidden');
+  document.getElementById('local-options').classList.add('hidden');
+  document.getElementById('online-options').classList.add('hidden');
+  if (polling) { polling = false; }
+  room = null;
+  playerNum = null;
+  state = null;
+}
 
 function dims(c) {
   const s = Math.min(c.offsetWidth, c.offsetHeight, 440);
@@ -12,12 +25,12 @@ function dims(c) {
 }
 
 function draw() {
+  if (!state || !state.board) return;
   const c = document.getElementById('cells');
   c.innerHTML = '';
   const w = c.offsetWidth, h = c.offsetHeight;
   if (!w || !h) { requestAnimationFrame(draw); return; }
   const d = dims(c), cx = w / 2, cy = h / 2;
-  if (!state) return;
 
   for (let i = 0; i < 14; i++) {
     const a = (i / 14) * Math.PI * 2 + Math.PI / 2;
@@ -112,53 +125,103 @@ function endGame() {
 function startPolling() {
   if (polling) return;
   polling = true;
-  setInterval(() => {
+  const interval = setInterval(() => {
+    if (!room) { clearInterval(interval); polling = false; return; }
     if (state && state.over) return;
     fetch(API + '/get-board?room=' + room)
       .then(r => r.json())
       .then(s => {
-        state = s;
-        draw();
+        if (s.board) {
+          const oldTurn = state ? state.turn : -1;
+          state = s;
+          draw();
+        }
       })
       .catch(() => {});
   }, 2000);
 }
 
-function startGame(pnum, r, s) {
+function startGame(pnum, r, s, local) {
   room = r;
   playerNum = pnum;
   state = s;
+  isLocal = local;
   document.getElementById('lobby').classList.add('hidden');
   document.getElementById('game-container').classList.remove('hidden');
-  document.getElementById('room-code').textContent = r;
+  if (local) {
+    document.getElementById('room-label').textContent = 'Mode local';
+    document.getElementById('btn-copy').classList.add('hidden');
+  } else {
+    document.getElementById('room-label').textContent = 'Code : ' + r;
+    document.getElementById('btn-copy').classList.remove('hidden');
+  }
   draw();
-  startPolling();
+  if (!local) startPolling();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const roomParam = params.get('room');
-  const playerParam = params.get('p');
 
   if (roomParam) {
-    const pnum = playerParam === '0' ? 0 : 1;
-    const btn = document.getElementById('btn-create');
-    btn.textContent = 'Connexion...';
-    btn.disabled = true;
-    fetch(API + '/join-game', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ room: roomParam }),
-    })
-    .then(r => { if (!r.ok) throw new Error('Partie introuvable'); return r.json(); })
-    .then(data => startGame(pnum, roomParam, data.state))
-    .catch(() => {
-      btn.textContent = 'Créer une partie';
-      btn.disabled = false;
-      document.getElementById('room-input').value = roomParam;
-      msg('Partie introuvable ou serveur en démarrage… réessaie dans 30s', true);
-    });
+    document.getElementById('lobby').classList.add('hidden');
+    const pnum = params.get('p') === '0' ? 0 : 1;
+    msg('Connexion à la partie...', false);
+    (function retryJoin(attempts) {
+      fetch(API + '/join-game', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ room: roomParam }),
+      })
+      .then(r => { if (!r.ok) throw new Error('Partie introuvable'); return r.json(); })
+      .then(data => {
+        hideMsg();
+        startGame(pnum, roomParam, data.state, false);
+      })
+      .catch(() => {
+        if (attempts > 0) {
+          setTimeout(() => retryJoin(attempts - 1), 5000);
+        } else {
+          msg('Partie introuvable — le serveur a redémarré. Crée une nouvelle partie.', true);
+        }
+      });
+    })(6);
+    return;
   }
+
+  document.getElementById('btn-local').addEventListener('click', () => {
+    document.getElementById('main-options').classList.add('hidden');
+    document.getElementById('local-options').classList.remove('hidden');
+  });
+
+  document.getElementById('btn-online').addEventListener('click', () => {
+    document.getElementById('main-options').classList.add('hidden');
+    document.getElementById('online-options').classList.remove('hidden');
+  });
+
+  document.getElementById('btn-back-local').addEventListener('click', showLobby);
+  document.getElementById('btn-back-online').addEventListener('click', showLobby);
+  document.getElementById('btn-quit').addEventListener('click', showLobby);
+
+  document.getElementById('btn-p0').addEventListener('click', () => {
+    if (playerNum !== null) return;
+    playerNum = 0;
+    document.getElementById('btn-p0').classList.add('active-player');
+    fetch(API + '/create-game', { method: 'POST' })
+      .then(r => r.json())
+      .then(data => startGame(0, data.room, data.state, true))
+      .catch(() => { msg('Erreur serveur', true); playerNum = null; });
+  });
+
+  document.getElementById('btn-p1').addEventListener('click', () => {
+    if (playerNum !== null) return;
+    playerNum = 1;
+    document.getElementById('btn-p1').classList.add('active-player');
+    fetch(API + '/create-game', { method: 'POST' })
+      .then(r => r.json())
+      .then(data => startGame(1, data.room, data.state, true))
+      .catch(() => { msg('Erreur serveur', true); playerNum = null; });
+  });
 
   document.getElementById('btn-create').addEventListener('click', () => {
     const btn = document.getElementById('btn-create');
@@ -168,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(r => r.json())
       .then(data => {
         history.replaceState(null, '', '?room=' + data.room + '&p=0');
-        startGame(0, data.room, data.state);
+        startGame(0, data.room, data.state, false);
       })
       .catch(() => {
         btn.textContent = 'Créer une partie';
@@ -188,15 +251,15 @@ document.addEventListener('DOMContentLoaded', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ room: code }),
     })
-    .then(r => { if (!r.ok) throw new Error('Partie introuvable'); return r.json(); })
+    .then(r => { if (!r.ok) throw new Error(); return r.json(); })
     .then(data => {
       history.replaceState(null, '', '?room=' + code + '&p=1');
-      startGame(1, code, data.state);
+      startGame(1, code, data.state, false);
     })
     .catch(() => {
       btn.textContent = 'Rejoindre';
       btn.disabled = false;
-      msg('Partie introuvable ou complète', true);
+      msg('Partie introuvable — le serveur a peut-être redémarré.', true);
     });
   });
 

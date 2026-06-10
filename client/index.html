@@ -15,16 +15,33 @@
     </header>
 
     <div id="lobby">
-      <button class="btn" id="btn-create">Créer une partie</button>
-      <div id="join-area">
-        <input type="text" id="room-input" placeholder="Code" maxlength="4">
-        <button class="btn" id="btn-join">Rejoindre</button>
+      <div id="main-options">
+        <button class="btn" id="btn-local">Partie locale</button>
+        <button class="btn" id="btn-online">Partie en ligne</button>
+      </div>
+
+      <div id="local-options" class="hidden">
+        <p class="subtitle" style="margin-bottom:6px">Choisissez votre camp</p>
+        <div id="players">
+          <button class="btn" id="btn-p0">Joueur 1</button>
+          <button class="btn" id="btn-p1">Joueur 2</button>
+        </div>
+        <button class="btn bt-outline" id="btn-back-local" style="margin-top:8px">Retour</button>
+      </div>
+
+      <div id="online-options" class="hidden">
+        <button class="btn" id="btn-create">Créer une partie</button>
+        <div id="join-area">
+          <input type="text" id="room-input" placeholder="Code" maxlength="4">
+          <button class="btn" id="btn-join">Rejoindre</button>
+        </div>
+        <button class="btn bt-outline" id="btn-back-online" style="margin-top:8px">Retour</button>
       </div>
     </div>
 
     <div id="game-container" class="hidden">
       <div id="room-bar">
-        <span>Code : <strong id="room-code"></strong></span>
+        <span id="room-label"></span>
         <button class="btn bt-small" id="btn-copy">Copier le lien</button>
       </div>
 
@@ -47,6 +64,7 @@
 
       <div id="toolbar">
         <button class="btn bt-outline" id="btn-rules">R&egrave;gles</button>
+        <button class="btn bt-outline" id="btn-quit">Quitter</button>
       </div>
 
       <div id="msg" class="msg hidden"></div>
