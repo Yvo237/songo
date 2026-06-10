@@ -100,7 +100,7 @@ function click(i) {
     if (el) { el.classList.add('pop'); setTimeout(() => el.classList.remove('pop'), 350); }
     draw();
     if (data.move.captured > 0) { msg('+' + data.move.captured + ' capturée(s)'); setTimeout(hideMsg, 1500); }
-    if (data.move.isCell7V) { msg('Case 7: graines rendues'); setTimeout(hideMsg, 2000); }
+    if (data.move.isCell7V) { msg('Don forcé à l\'adversaire'); setTimeout(hideMsg, 2000); }
     busy = false;
   })
   .catch(() => { msg('Erreur de connexion', true); busy = false; });
