@@ -138,42 +138,66 @@ function startGame(pnum, r, s) {
 document.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
   const roomParam = params.get('room');
+  const playerParam = params.get('p');
 
   if (roomParam) {
+    const pnum = playerParam === '0' ? 0 : 1;
+    const btn = document.getElementById('btn-create');
+    btn.textContent = 'Connexion...';
+    btn.disabled = true;
     fetch(API + '/join-game', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ room: roomParam }),
     })
     .then(r => { if (!r.ok) throw new Error('Partie introuvable'); return r.json(); })
-    .then(data => startGame(1, roomParam, data.state))
+    .then(data => startGame(pnum, roomParam, data.state))
     .catch(() => {
+      btn.textContent = 'Créer une partie';
+      btn.disabled = false;
       document.getElementById('room-input').value = roomParam;
-      msg('Partie introuvable', true);
+      msg('Partie introuvable ou serveur en démarrage… réessaie dans 30s', true);
     });
   }
 
   document.getElementById('btn-create').addEventListener('click', () => {
+    const btn = document.getElementById('btn-create');
+    btn.textContent = 'Création...';
+    btn.disabled = true;
     fetch(API + '/create-game', { method: 'POST' })
       .then(r => r.json())
       .then(data => {
-        const url = window.location.origin + window.location.pathname + '?room=' + data.room;
+        history.replaceState(null, '', '?room=' + data.room + '&p=0');
         startGame(0, data.room, data.state);
-        document.getElementById('room-code').textContent = data.room;
+      })
+      .catch(() => {
+        btn.textContent = 'Créer une partie';
+        btn.disabled = false;
+        msg('Erreur de connexion au serveur', true);
       });
   });
 
   document.getElementById('btn-join').addEventListener('click', () => {
     const code = document.getElementById('room-input').value.trim().toUpperCase();
     if (!code) return;
+    const btn = document.getElementById('btn-join');
+    btn.textContent = 'Connexion...';
+    btn.disabled = true;
     fetch(API + '/join-game', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ room: code }),
     })
     .then(r => { if (!r.ok) throw new Error('Partie introuvable'); return r.json(); })
-    .then(data => startGame(1, code, data.state))
-    .catch(() => msg('Partie introuvable ou complète', true));
+    .then(data => {
+      history.replaceState(null, '', '?room=' + code + '&p=1');
+      startGame(1, code, data.state);
+    })
+    .catch(() => {
+      btn.textContent = 'Rejoindre';
+      btn.disabled = false;
+      msg('Partie introuvable ou complète', true);
+    });
   });
 
   document.getElementById('room-input').addEventListener('keydown', e => {

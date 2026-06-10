@@ -31,8 +31,6 @@ app.post('/join-game', (req, res) => {
   const { room } = req.body;
   const entry = games.get(room);
   if (!entry) return res.status(404).json({ error: 'Partie introuvable' });
-  if (entry.players >= 2) return res.status(400).json({ error: 'Partie complète' });
-  entry.players = 2;
   res.json({ state: entry.game.getState() });
 });
 
