@@ -3,6 +3,7 @@ let playerNum = null;
 let state = null;
 let busy = false;
 let polling = false;
+let room = null;
 const LAB = 'ABCDEFGHIJKLMN';
 
 function dims(c) {
@@ -75,7 +76,7 @@ function click(i) {
   fetch(API + '/play', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ player: playerNum, cell: i }),
+    body: JSON.stringify({ room, player: playerNum, cell: i }),
   })
   .then(r => r.json())
   .then(data => {
@@ -113,10 +114,9 @@ function startPolling() {
   polling = true;
   setInterval(() => {
     if (state && state.over) return;
-    fetch(API + '/get-board')
+    fetch(API + '/get-board?room=' + room)
       .then(r => r.json())
       .then(s => {
-        const oldTurn = state ? state.turn : -1;
         state = s;
         draw();
       })
@@ -124,28 +124,82 @@ function startPolling() {
   }, 2000);
 }
 
+function startGame(pnum, r, s) {
+  room = r;
+  playerNum = pnum;
+  state = s;
+  document.getElementById('lobby').classList.add('hidden');
+  document.getElementById('game-container').classList.remove('hidden');
+  document.getElementById('room-code').textContent = r;
+  draw();
+  startPolling();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('btn-p0').addEventListener('click', () => {
-    playerNum = 0;
-    document.getElementById('btn-p0').classList.add('active-player');
-    document.getElementById('btn-p1').classList.remove('active-player');
-    draw();
-    if (!polling) startPolling();
+  const params = new URLSearchParams(window.location.search);
+  const roomParam = params.get('room');
+
+  if (roomParam) {
+    fetch(API + '/join-game', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ room: roomParam }),
+    })
+    .then(r => { if (!r.ok) throw new Error('Partie introuvable'); return r.json(); })
+    .then(data => startGame(1, roomParam, data.state))
+    .catch(() => {
+      document.getElementById('room-input').value = roomParam;
+      msg('Partie introuvable', true);
+    });
+  }
+
+  document.getElementById('btn-create').addEventListener('click', () => {
+    fetch(API + '/create-game', { method: 'POST' })
+      .then(r => r.json())
+      .then(data => {
+        const url = window.location.origin + window.location.pathname + '?room=' + data.room;
+        startGame(0, data.room, data.state);
+        document.getElementById('room-code').textContent = data.room;
+      });
   });
-  document.getElementById('btn-p1').addEventListener('click', () => {
-    playerNum = 1;
-    document.getElementById('btn-p1').classList.add('active-player');
-    document.getElementById('btn-p0').classList.remove('active-player');
-    draw();
-    if (!polling) startPolling();
+
+  document.getElementById('btn-join').addEventListener('click', () => {
+    const code = document.getElementById('room-input').value.trim().toUpperCase();
+    if (!code) return;
+    fetch(API + '/join-game', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ room: code }),
+    })
+    .then(r => { if (!r.ok) throw new Error('Partie introuvable'); return r.json(); })
+    .then(data => startGame(1, code, data.state))
+    .catch(() => msg('Partie introuvable ou complète', true));
   });
+
+  document.getElementById('room-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('btn-join').click();
+  });
+
+  document.getElementById('btn-copy').addEventListener('click', () => {
+    const url = window.location.origin + window.location.pathname + '?room=' + room;
+    navigator.clipboard.writeText(url).then(() => {
+      msg('Lien copié !');
+      setTimeout(hideMsg, 2000);
+    });
+  });
+
   document.getElementById('btn-replay').addEventListener('click', () => {
-    fetch(API + '/reset', { method: 'POST' }).then(r => r.json()).then(s => {
+    fetch(API + '/reset', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ room }),
+    }).then(r => r.json()).then(s => {
       state = s;
       document.getElementById('modal-end').classList.add('hidden');
       draw();
     });
   });
+
   const rm = document.getElementById('modal-rules');
   document.getElementById('btn-rules').addEventListener('click', () => rm.classList.remove('hidden'));
   document.getElementById('close-rules').addEventListener('click', () => rm.classList.add('hidden'));

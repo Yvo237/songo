@@ -5,8 +5,15 @@ html,body{height:100%;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
 header{text-align:center}
 header h1{font-size:1.5rem;font-weight:700;letter-spacing:2px;color:var(--ac);text-transform:uppercase}
 .subtitle{font-size:.65rem;color:var(--tx2);margin-top:-2px}
+#lobby{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:40px}
+#join-area{display:flex;gap:8px;align-items:center}
+#join-area input{padding:8px 12px;border-radius:8px;border:2px solid var(--bd);background:var(--sf);color:var(--tx);font-size:1.1rem;font-weight:700;text-align:center;text-transform:uppercase;letter-spacing:4px;width:100px;outline:none;transition:border-color .2s}
+#join-area input:focus{border-color:var(--ac)}
+#room-bar{display:flex;align-items:center;gap:12px;margin-bottom:4px;font-size:.85rem;background:var(--sf);padding:6px 16px;border-radius:20px;border:1px solid var(--bd)}
+.bt-small{padding:4px 12px;font-size:.7rem}
 #players{display:flex;gap:8px;margin:4px 0}
 #game-container{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;justify-content:center}
+#game-container.hidden{display:none}
 .pinfo{display:flex;align-items:center;gap:10px;padding:5px 16px;border-radius:20px;background:var(--sf);border:2px solid transparent;min-width:140px;justify-content:center}
 .pinfo.active{border-color:var(--ac);box-shadow:0 0 10px rgba(210,153,34,.25)}
 .pname{font-weight:600;font-size:.85rem}

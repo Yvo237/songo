@@ -14,15 +14,23 @@
       <p class="subtitle">Jeu de semences Africain &mdash; multijoueur</p>
     </header>
 
-    <div id="players">
-      <button class="btn" id="btn-p0">Joueur 1</button>
-      <button class="btn" id="btn-p1">Joueur 2</button>
+    <div id="lobby">
+      <button class="btn" id="btn-create">Créer une partie</button>
+      <div id="join-area">
+        <input type="text" id="room-input" placeholder="Code" maxlength="4">
+        <button class="btn" id="btn-join">Rejoindre</button>
+      </div>
     </div>
 
-    <div id="game-container">
-      <div id="p2-info" class="pinfo">
-        <span class="pname">Joueur 2</span>
-        <span class="badge" id="cap-1">0</span>
+    <div id="game-container" class="hidden">
+      <div id="room-bar">
+        <span>Code : <strong id="room-code"></strong></span>
+        <button class="btn bt-small" id="btn-copy">Copier le lien</button>
+      </div>
+
+      <div id="players">
+        <button class="btn" id="btn-p0">Joueur 1</button>
+        <button class="btn" id="btn-p1">Joueur 2</button>
       </div>
 
       <div id="board">
@@ -32,17 +40,22 @@
         </div>
       </div>
 
+      <div id="p2-info" class="pinfo">
+        <span class="pname">Joueur 2</span>
+        <span class="badge" id="cap-1">0</span>
+      </div>
+
       <div id="p1-info" class="pinfo">
         <span class="badge" id="cap-0">0</span>
         <span class="pname">Joueur 1</span>
       </div>
-    </div>
 
-    <div id="toolbar">
-      <button class="btn bt-outline" id="btn-rules">R&egrave;gles</button>
-    </div>
+      <div id="toolbar">
+        <button class="btn bt-outline" id="btn-rules">R&egrave;gles</button>
+      </div>
 
-    <div id="msg" class="msg hidden"></div>
+      <div id="msg" class="msg hidden"></div>
+    </div>
   </div>
 
   <div id="modal-rules" class="modal hidden">
