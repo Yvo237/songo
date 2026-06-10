@@ -83,7 +83,7 @@ function draw() {
     el.dataset.i = i;
     el.classList.add(i <= 6 ? 'p1' : 'p2');
 
-    const ok = !state.over && !busy && playerNum !== null && state.turn === playerNum && state.validMoves.includes(i);
+    const ok = !state.over && !busy && state.validMoves.includes(i) && (isLocal || (playerNum !== null && state.turn === playerNum));
     if (ok) {
       el.classList.add('ok');
       el.addEventListener('click', () => click(i));
@@ -116,7 +116,11 @@ function draw() {
   } else if (playerNum === null) {
     tt.textContent = 'Choisissez votre camp';
   } else {
-    tt.textContent = state.turn === playerNum ? 'À vous de jouer' : 'Tour adverse';
+    if (isLocal) {
+      tt.textContent = state.turn === 0 ? 'Tour de Nord' : 'Tour de Sud';
+    } else {
+      tt.textContent = state.turn === playerNum ? 'À vous de jouer' : 'Tour adverse';
+    }
     $('p1-info').classList.toggle('active', state.turn === 0);
     $('p2-info').classList.toggle('active', state.turn === 1);
   }
@@ -146,7 +150,7 @@ function click(i) {
   fetch(API + '/play', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ room, player: playerNum, cell: i }),
+    body: JSON.stringify({ room, player: isLocal ? state.turn : playerNum, cell: i }),
   })
   .then(r => r.json())
   .then(data => {
@@ -190,6 +194,9 @@ function endGame() {
   if (win === -1) {
     $('end-title').textContent = 'Match nul !';
     sfxLose();
+  } else if (isLocal) {
+    $('end-title').textContent = win === 0 ? '🏆 Nord gagne !' : '🏆 Sud gagne !';
+    sfxWin();
   } else if (win === playerNum) {
     $('end-title').textContent = '🎉 Vous gagnez !';
     sfxWin();
