@@ -7,9 +7,11 @@ header h1{font-size:1.5rem;font-weight:700;letter-spacing:2px;color:var(--ac);te
 .subtitle{font-size:.65rem;color:var(--tx2);margin-top:-2px}
 #lobby{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:40px}
 #lobby.hidden{display:none}
-#main-options,#local-options,#online-options{display:none}
 .hidden{display:none}
-#main-options:not(.hidden),#local-options:not(.hidden),#online-options:not(.hidden){display:flex;flex-direction:column;align-items:center;gap:12px}
+#main-options{display:flex;flex-direction:column;align-items:center;gap:12px}
+#main-options.hidden{display:none}
+#local-options,#online-options{display:none}
+#local-options:not(.hidden),#online-options:not(.hidden){display:flex;flex-direction:column;align-items:center;gap:12px}
 #join-area{display:flex;gap:8px;align-items:center}
 #join-area input{padding:8px 12px;border-radius:8px;border:2px solid var(--bd);background:var(--sf);color:var(--tx);font-size:1.1rem;font-weight:700;text-align:center;text-transform:uppercase;letter-spacing:4px;width:100px;outline:none;transition:border-color .2s}
 #join-area input:focus{border-color:var(--ac)}
