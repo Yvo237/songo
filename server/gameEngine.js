@@ -23,6 +23,8 @@ class SongoGame {
     this.over = false;
     this.winner = null;
     this.winReason = null;
+    this.history = [];
+    this.moveCount = 0;
   }
 
   next(i) { return SongoGame.NEXT[i]; }
@@ -208,6 +210,15 @@ class SongoGame {
       this._resolveEndGameBeforeTurn();
     }
 
+    this.moveCount++;
+    this.history.push({
+      n: this.moveCount,
+      player: p,
+      cell: cellIndex,
+      captured: totalCaptured,
+      forcedDonation: move && move.forcedDonation,
+    });
+
     return { cell: cellIndex, captured: totalCaptured, isCell7V, over: this.over, winner: this.winner };
   }
 
@@ -247,6 +258,8 @@ class SongoGame {
       winner: this.winner,
       winReason: this.winReason,
       validMoves: this.getValidMoves(this.turn),
+      history: [...this.history],
+      moveCount: this.moveCount,
     };
   }
 }

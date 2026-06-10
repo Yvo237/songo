@@ -23,22 +23,24 @@ function generateRoom() {
 
 app.post('/create-game', (req, res) => {
   const room = generateRoom();
-  games.set(room, { game: new SongoGame(), players: 1 });
-  res.json({ room, state: games.get(room).game.getState() });
+  games.set(room, { game: new SongoGame(), players: [{ name: req.body.name || 'Joueur 1', connected: true }, { name: 'Joueur 2', connected: false }] });
+  res.json({ room, state: games.get(room).game.getState(), players: games.get(room).players });
 });
 
 app.post('/join-game', (req, res) => {
   const { room } = req.body;
   const entry = games.get(room);
   if (!entry) return res.status(404).json({ error: 'Partie introuvable' });
-  res.json({ state: entry.game.getState() });
+  entry.players[1].name = req.body.name || 'Joueur 2';
+  entry.players[1].connected = true;
+  res.json({ state: entry.game.getState(), players: entry.players });
 });
 
 app.get('/get-board', (req, res) => {
   const { room } = req.query;
   const entry = games.get(room);
   if (!entry) return res.status(404).json({ error: 'Partie introuvable' });
-  res.json(entry.game.getState());
+  res.json({ ...entry.game.getState(), players: entry.players });
 });
 
 app.post('/play', (req, res) => {
@@ -51,15 +53,17 @@ app.post('/play', (req, res) => {
   }
   const result = game.play(cell);
   if (!result) return res.status(400).json({ error: 'Coup invalide' });
-  res.json({ state: game.getState(), move: result });
+  res.json({ state: game.getState(), move: result, players: entry.players });
 });
 
 app.post('/reset', (req, res) => {
   const { room } = req.body;
   const entry = games.get(room);
   if (!entry) return res.status(404).json({ error: 'Partie introuvable' });
+  const names = entry.players.map(p => p.name);
   Object.assign(entry.game, new SongoGame());
-  res.json(entry.game.getState());
+  entry.players = names.map((n, i) => ({ name: n, connected: i === 0 }));
+  res.json({ ...entry.game.getState(), players: entry.players });
 });
 
 app.listen(PORT, () => console.log(`Songo server on http://localhost:${PORT}`));

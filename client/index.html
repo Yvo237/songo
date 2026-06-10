@@ -14,56 +14,68 @@
       <p class="subtitle">Jeu de semences Africain &mdash; multijoueur</p>
     </header>
 
+    <!-- LOBBY -->
     <div id="lobby">
       <div id="main-options">
-        <button class="btn" id="btn-local">Partie locale</button>
-        <button class="btn" id="btn-online">Partie en ligne</button>
+        <button class="btn" id="btn-local">🏠 Partie locale</button>
+        <button class="btn" id="btn-online">🌐 Partie en ligne</button>
       </div>
 
       <div id="local-options" class="hidden">
-        <p class="subtitle" style="margin-bottom:6px">Choisissez votre camp</p>
+        <p class="subtitle">Choisissez votre camp</p>
         <div id="players">
-          <button class="btn" id="btn-p0">Joueur 1</button>
-          <button class="btn" id="btn-p1">Joueur 2</button>
+          <button class="btn" id="btn-p0">Joueur 1 (Nord)</button>
+          <button class="btn" id="btn-p1">Joueur 2 (Sud)</button>
         </div>
-        <button class="btn bt-outline" id="btn-back-local" style="margin-top:8px">Retour</button>
+        <button class="btn bt-outline" id="btn-back-local">Retour</button>
       </div>
 
       <div id="online-options" class="hidden">
+        <div class="field">
+          <label>Pseudo</label>
+          <input type="text" id="online-name" placeholder="Votre nom" maxlength="12">
+        </div>
         <button class="btn" id="btn-create">Créer une partie</button>
+        <div class="sep">ou</div>
         <div id="join-area">
           <input type="text" id="room-input" placeholder="Code" maxlength="4">
           <button class="btn" id="btn-join">Rejoindre</button>
         </div>
-        <button class="btn bt-outline" id="btn-back-online" style="margin-top:8px">Retour</button>
+        <button class="btn bt-outline" id="btn-back-online">Retour</button>
       </div>
     </div>
 
+    <!-- GAME -->
     <div id="game-container" class="hidden">
-      <div id="room-bar">
+      <div id="top-bar">
         <span id="room-label"></span>
-        <button class="btn bt-small" id="btn-copy">Copier le lien</button>
+        <button class="btn bt-tiny" id="btn-copy">📋</button>
       </div>
 
-      <div id="board">
-        <div id="cells"></div>
-        <div id="center">
-          <span id="turn-txt">Choisissez votre camp</span>
+      <div id="game-layout">
+        <div id="board-col">
+          <div id="p2-info" class="pinfo"><span class="pname" id="p2-name">Sud</span><span class="badge" id="cap-1">0</span></div>
+          <div id="board">
+            <div id="cells"></div>
+            <div id="center"><span id="turn-txt">Chargement...</span></div>
+          </div>
+          <div id="p1-info" class="pinfo"><span class="badge" id="cap-0">0</span><span class="pname" id="p1-name">Nord</span></div>
+        </div>
+
+        <div id="side-panel">
+          <div id="last-move-box">
+            <span class="sp-label">Dernier coup</span>
+            <span id="last-move-txt">—</span>
+          </div>
+          <div id="history-box">
+            <span class="sp-label">Historique</span>
+            <div id="history-list"></div>
+          </div>
         </div>
       </div>
 
-      <div id="p2-info" class="pinfo">
-        <span class="pname">Joueur 2</span>
-        <span class="badge" id="cap-1">0</span>
-      </div>
-
-      <div id="p1-info" class="pinfo">
-        <span class="badge" id="cap-0">0</span>
-        <span class="pname">Joueur 1</span>
-      </div>
-
       <div id="toolbar">
-        <button class="btn bt-outline" id="btn-rules">R&egrave;gles</button>
+        <button class="btn bt-outline" id="btn-rules">Règles</button>
         <button class="btn bt-outline" id="btn-quit">Quitter</button>
       </div>
 
@@ -74,17 +86,17 @@
   <div id="modal-rules" class="modal hidden">
     <div class="modal-box">
       <span class="x" id="close-rules">&times;</span>
-      <h2>R&egrave;gles du Songo</h2>
+      <h2>Règles du Songo</h2>
       <ul>
         <li>14 cases (7 par joueur), 5 graines chacune. Total 70 graines.</li>
-        <li>&Agrave; son tour, on vide une case de son camp et on s&egrave;me une par une dans le sens du cycle.</li>
+        <li>À son tour, on vide une case de son camp et on sème une par une dans le sens du cycle.</li>
         <li>Si &gt;13 graines (grenier) : 1 tour complet (13 cases), puis le reste uniquement chez l'adversaire.</li>
-        <li>Capture : derni&egrave;re graine chez l'adversaire, case finale = 2&ndash;4 graines.</li>
-        <li>Premi&egrave;re case adverse prot&eacute;g&eacute;e : pas de capture isol&eacute;e, mais possible en cha&icirc;ne.</li>
-        <li>Prise en cha&icirc;ne : on remonte vers la premi&egrave;re case adverse tant que 2&ndash;4 graines.</li>
-        <li>Case d'attaque (derni&egrave;re de son camp) : 1 graine interdit, 2 graines interdit sauf si capture.</li>
-        <li>Interdiction d'affamer : une capture qui viderait tout le camp adverse est annul&eacute;e.</li>
-        <li>Solidarit&eacute; : si camp adverse vide, donner au moins 7 graines (ou le max possible).</li>
+        <li>Capture : dernière graine chez l'adversaire, case finale = 2–4 graines.</li>
+        <li>Première case adverse protégée : pas de capture isolée, mais possible en chaîne.</li>
+        <li>Prise en chaîne : on remonte vers la première case adverse tant que 2–4 graines.</li>
+        <li>Case d'attaque : 1 graine interdit, 2 graines interdit sauf si capture.</li>
+        <li>Interdiction d'affamer : une capture qui viderait le camp adverse est annulée.</li>
+        <li>Solidarité : si camp adverse vide, donner ≥7 graines ou le max possible.</li>
         <li>40 graines = victoire. &lt;10 graines sur le plateau = fin (ramassage).</li>
       </ul>
     </div>
