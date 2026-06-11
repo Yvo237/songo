@@ -4,17 +4,20 @@ interface Props {
   state: GameState;
   topName: string;
   bottomName: string;
+  flipped?: boolean;
 }
 
-export default function ScorePanel({ state, topName, bottomName }: Props) {
+export default function ScorePanel({ state, topName, bottomName, flipped }: Props) {
   const total = state.board.reduce((a, b) => a + b, 0);
 
   return (
     <div className="flex items-stretch gap-2 sm:gap-3 w-full max-w-xl mx-auto">
       <ScoreCard
-        name={topName}
-        score={state.scores.north}
-        isActive={state.currentPlayer === 'north' && !state.gameOver}
+        name={flipped ? bottomName : topName}
+        score={flipped ? state.scores.south : state.scores.north}
+        isActive={flipped
+          ? state.currentPlayer === 'south' && !state.gameOver
+          : state.currentPlayer === 'north' && !state.gameOver}
       />
 
       <div className="flex flex-col items-center justify-center px-1 shrink-0">
@@ -23,9 +26,11 @@ export default function ScorePanel({ state, topName, bottomName }: Props) {
       </div>
 
       <ScoreCard
-        name={bottomName}
-        score={state.scores.south}
-        isActive={state.currentPlayer === 'south' && !state.gameOver}
+        name={flipped ? topName : bottomName}
+        score={flipped ? state.scores.north : state.scores.south}
+        isActive={flipped
+          ? state.currentPlayer === 'north' && !state.gameOver
+          : state.currentPlayer === 'south' && !state.gameOver}
       />
     </div>
   );

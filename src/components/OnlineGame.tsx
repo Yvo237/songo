@@ -139,7 +139,7 @@ export default function OnlineGame({ myName, opponentName, isHost, onLeave }: Pr
         </header>
 
         <div className="mb-4">
-          <ScorePanel state={gameState} topName={topName} bottomName={bottomName} />
+          <ScorePanel state={gameState} topName={topName} bottomName={bottomName} flipped={!isHost} />
         </div>
 
         {/* Status */}
@@ -168,7 +168,7 @@ export default function OnlineGame({ myName, opponentName, isHost, onLeave }: Pr
         </div>
 
         <div className="mb-4">
-          <Board state={gameState} onMove={handleMove} humanPlayer={myRole} topName={topName} bottomName={bottomName} />
+          <Board state={gameState} onMove={handleMove} humanPlayer={myRole} topName={topName} bottomName={bottomName} flipped={!isHost} />
         </div>
 
         {gameState.gameOver && isHost && (

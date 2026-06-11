@@ -8,19 +8,28 @@ interface BoardProps {
   humanPlayer: Player | 'both';
   topName: string;
   bottomName: string;
+  flipped?: boolean;
 }
 
-export default function Board({ state, onMove, humanPlayer, topName, bottomName }: BoardProps) {
+export default function Board({ state, onMove, humanPlayer, topName, bottomName, flipped }: BoardProps) {
   const validMoves = getValidMoves(state);
   const isHumanTurn = humanPlayer === 'both' || state.currentPlayer === humanPlayer;
   const lastMove = state.lastMove;
 
-  const topRow = [7, 8, 9, 10, 11, 12, 13];
-  const bottomRow = [6, 5, 4, 3, 2, 1, 0];
+  const topRow = flipped
+    ? [0, 1, 2, 3, 4, 5, 6]
+    : [7, 8, 9, 10, 11, 12, 13];
+  const bottomRow = flipped
+    ? [13, 12, 11, 10, 9, 8, 7]
+    : [6, 5, 4, 3, 2, 1, 0];
   const lastLanded = lastMove?.visitedPits[lastMove.visitedPits.length - 1] ?? -1;
 
-  const topActive = state.currentPlayer === 'north' && !state.gameOver;
-  const bottomActive = state.currentPlayer === 'south' && !state.gameOver;
+  const topActive = flipped
+    ? state.currentPlayer === 'south' && !state.gameOver
+    : state.currentPlayer === 'north' && !state.gameOver;
+  const bottomActive = flipped
+    ? state.currentPlayer === 'north' && !state.gameOver
+    : state.currentPlayer === 'south' && !state.gameOver;
 
   return (
     <div className="w-full max-w-[680px] mx-auto">
@@ -57,7 +66,7 @@ export default function Board({ state, onMove, humanPlayer, topName, bottomName 
             <span className={`text-xs sm:text-sm font-bold tracking-wide transition-colors ${
               topActive ? 'text-amber-200' : 'text-amber-900/30'
             }`}>
-              {topName}
+              {flipped ? bottomName : topName}
             </span>
           </div>
         </div>
@@ -127,7 +136,7 @@ export default function Board({ state, onMove, humanPlayer, topName, bottomName 
             <span className={`text-xs sm:text-sm font-bold tracking-wide transition-colors ${
               bottomActive ? 'text-amber-200' : 'text-amber-900/30'
             }`}>
-              {bottomName}
+              {flipped ? topName : bottomName}
             </span>
           </div>
         </div>
