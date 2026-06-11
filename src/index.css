@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+@custom-media --xs (min-width: 400px);
+@custom-media --2xs (min-width: 360px);
+
 @font-face {
   font-family: 'GameTitle';
   src: local('Cinzel'), local('Georgia'), local('Times New Roman');
@@ -22,6 +25,11 @@ body {
   background: #2A180A;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+}
+
+html, body, #root {
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 ::-webkit-scrollbar { width: 5px; }

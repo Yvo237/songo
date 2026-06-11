@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 
+const LOGICAL_SIZE = 70;
+
 interface Props {
   count: number;
-  size: number;
 }
 
 const BEAD_COLORS = [
@@ -16,7 +17,8 @@ const BEAD_COLORS = [
   { base: '#2C3E50', hi: '#5D6D7E', lo: '#1B2631' },
 ];
 
-function makeSeeds(count: number, size: number) {
+function makeSeeds(count: number) {
+  const size = LOGICAL_SIZE;
   const out: { x: number; y: number; r: number; colorIdx: number; rot: number }[] = [];
   const cx = size / 2;
   const cy = size / 2;
@@ -38,15 +40,16 @@ function makeSeeds(count: number, size: number) {
   return out;
 }
 
-export default function SeedDisplay({ count, size }: Props) {
-  const seeds = useMemo(() => makeSeeds(count, size), [count, size]);
+export default function SeedDisplay({ count }: Props) {
+  const seeds = useMemo(() => makeSeeds(count), [count]);
   if (count === 0) return null;
 
   return (
     <svg
-      width={size}
-      height={size}
-      className="absolute inset-0 m-auto pointer-events-none"
+      width="100%"
+      height="100%"
+      viewBox={`0 0 ${LOGICAL_SIZE} ${LOGICAL_SIZE}`}
+      className="absolute inset-0 pointer-events-none"
       aria-hidden="true"
     >
       <defs>

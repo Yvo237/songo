@@ -23,7 +23,7 @@ export default function Pit({
       aria-label={`${seeds} graines`}
       className={cn(
         'relative flex items-center justify-center rounded-full transition-all duration-200 select-none',
-        'w-[50px] h-[50px] sm:w-[66px] sm:h-[66px] md:w-[78px] md:h-[78px]',
+        'w-[38px] h-[38px] 2xs:w-[46px] 2xs:h-[46px] xs:w-[56px] xs:h-[56px] sm:w-[66px] sm:h-[66px] md:w-[78px] md:h-[78px]',
         'border border-[#3A2210]/60',
         isPlayable && [
           'cursor-pointer',
@@ -44,11 +44,11 @@ export default function Pit({
             : 'inset 0 6px 20px rgba(0,0,0,0.9), inset 0 -3px 8px rgba(60,40,15,0.15)',
       }}
     >
-      <SeedDisplay count={seeds} size={70} />
+      <SeedDisplay count={seeds} />
 
       {/* Count */}
       {seeds > 0 && (
-        <span className="absolute -bottom-1.5 -right-1 z-10 flex items-center justify-center min-w-[18px] h-[18px] px-[5px] rounded-full text-[9px] font-bold leading-none bg-amber-100 text-amber-900 shadow border border-amber-300/50">
+        <span className="absolute -bottom-1.5 -right-1 z-10 flex items-center justify-center min-w-[18px] h-[18px] px-[5px] rounded-full text-[8px] 2xs:text-[9px] font-bold leading-none bg-amber-100 text-amber-900 shadow border border-amber-300/50">
           {seeds}
         </span>
       )}

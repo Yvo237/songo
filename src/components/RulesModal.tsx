@@ -10,25 +10,25 @@ export default function RulesModal({ isOpen, onClose }: Props) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative rounded-2xl w-full max-w-lg max-h-[85vh] overflow-hidden shadow-2xl border border-amber-700/15"
+      <div className="relative rounded-2xl w-full max-w-lg max-h-[90dvh] xs:max-h-[85vh] overflow-hidden shadow-2xl border border-amber-700/15 mx-2 xs:mx-0"
         style={{ background: 'linear-gradient(180deg, #3A2610 0%, #2A180A 100%)' }}
       >
-        <div className="sticky top-0 z-10 border-b border-amber-800/15 px-5 py-3.5 flex items-center justify-between" style={{ background: '#3A2610' }}>
-          <h2 className="text-base sm:text-lg font-bold text-amber-200" style={{ fontFamily: 'Cinzel, Georgia, serif' }}>
+        <div className="sticky top-0 z-10 border-b border-amber-800/15 px-4 xs:px-5 py-3 xs:py-3.5 flex items-center justify-between" style={{ background: '#3A2610' }}>
+          <h2 className="text-sm xs:text-base sm:text-lg font-bold text-amber-200" style={{ fontFamily: 'Cinzel, Georgia, serif' }}>
             Regles du Songo
           </h2>
           <button
             onClick={onClose}
-            className="w-7 h-7 rounded-lg bg-white/5 hover:bg-white/10 text-amber-400/50 hover:text-amber-300 flex items-center justify-center transition-colors"
+            className="w-6 h-6 xs:w-7 xs:h-7 rounded-lg bg-white/5 hover:bg-white/10 text-amber-400/50 hover:text-amber-300 flex items-center justify-center transition-colors shrink-0"
             aria-label="Fermer"
           >
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <svg className="w-3 h-3 xs:w-3.5 xs:h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        <div className="overflow-y-auto max-h-[calc(85vh-56px)] p-5 space-y-4 text-amber-200/70 text-[13px] sm:text-sm leading-relaxed">
+        <div className="overflow-y-auto max-h-[calc(90dvh-56px)] xs:max-h-[calc(85vh-56px)] p-4 xs:p-5 space-y-3 xs:space-y-4 text-amber-200/70 text-[12px] xs:text-[13px] sm:text-sm leading-relaxed">
           <Sec title="Objectif">
             <p>Capturer au moins <strong className="text-amber-200">40 graines</strong> sur les 70 en jeu.</p>
           </Sec>

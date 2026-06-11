@@ -103,41 +103,41 @@ export default function Game({ mode, difficulty, southName, northName, onBackToM
       {/* Warm overlay */}
       <div className="fixed inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(120,80,30,0.15), transparent 70%)' }} />
 
-      <div className="relative z-10 max-w-2xl mx-auto px-3 py-3 sm:py-4 flex flex-col min-h-screen">
+      <div className="relative z-10 max-w-2xl mx-auto px-2 xs:px-3 py-2 xs:py-3 sm:py-4 flex flex-col min-h-dvh">
         {/* Header */}
-        <header className="flex items-center justify-between mb-4">
+        <header className="flex items-center justify-between mb-2 xs:mb-3 sm:mb-4">
           <button
             onClick={onBackToMenu}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-amber-400/60 hover:text-amber-300 text-xs font-medium transition-colors hover:bg-white/5"
+            className="flex items-center gap-1 px-2 xs:px-2.5 py-1 xs:py-1.5 rounded-lg text-amber-400/60 hover:text-amber-300 text-[10px] xs:text-xs font-medium transition-colors hover:bg-white/5"
           >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-3.5 h-3.5 xs:w-4 xs:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
             Menu
           </button>
 
-          <h1 className="text-sm sm:text-base font-bold text-amber-400/70 tracking-widest" style={{ fontFamily: 'Cinzel, Georgia, serif' }}>
+          <h1 className="text-[11px] xs:text-sm sm:text-base font-bold text-amber-400/70 tracking-widest" style={{ fontFamily: 'Cinzel, Georgia, serif' }}>
             SONGO
           </h1>
 
           <button
             onClick={() => setShowRules(true)}
-            className="p-1.5 rounded-lg text-amber-400/60 hover:text-amber-300 transition-colors hover:bg-white/5"
+            className="p-1 xs:p-1.5 rounded-lg text-amber-400/60 hover:text-amber-300 transition-colors hover:bg-white/5"
             aria-label="Regles"
           >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <svg className="w-4 h-4 xs:w-5 xs:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
             </svg>
           </button>
         </header>
 
         {/* Scores */}
-        <div className="mb-4">
+        <div className="mb-2 xs:mb-3 sm:mb-4">
           <ScorePanel state={gameState} topName={northName} bottomName={southName} />
         </div>
 
         {/* Status */}
-        <div className={`text-center mb-4 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-all ${
+        <div className={`text-center mb-2 xs:mb-3 sm:mb-4 px-3 xs:px-4 py-2 xs:py-2.5 rounded-xl text-[10px] xs:text-xs sm:text-sm font-medium transition-all ${
           gameState.gameOver
             ? 'bg-amber-900/40 text-amber-200 border border-amber-600/30'
             : isAIThinking
@@ -145,7 +145,7 @@ export default function Game({ mode, difficulty, southName, northName, onBackToM
               : 'bg-black/20 text-amber-300/70 border border-amber-800/15'
         }`}>
           {isAIThinking ? (
-            <span className="flex items-center justify-center gap-2">
+            <span className="flex items-center justify-center gap-1.5 xs:gap-2">
               <span className="flex gap-0.5">
                 <span className="w-1 h-1 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                 <span className="w-1 h-1 bg-amber-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -159,7 +159,7 @@ export default function Game({ mode, difficulty, southName, northName, onBackToM
         </div>
 
         {/* Board */}
-        <div className="mb-4">
+        <div className="mb-2 xs:mb-3 sm:mb-4">
           <Board
             state={gameState}
             onMove={handleMove}
@@ -172,19 +172,19 @@ export default function Game({ mode, difficulty, southName, northName, onBackToM
         {/* Controls */}
         <div className="flex justify-center gap-2 mb-2">
           <ActionBtn onClick={handleUndo} disabled={undoStack.length === 0 || isAIThinking} label="Annuler">
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-3 h-3 xs:w-3.5 xs:h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
             </svg>
           </ActionBtn>
           <ActionBtn onClick={handleRestart} disabled={false} label="Recommencer">
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="w-3 h-3 xs:w-3.5 xs:h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
             </svg>
           </ActionBtn>
         </div>
 
         {myTurn && (
-          <p className="text-center text-[10px] text-amber-600/40 mb-3">
+          <p className="text-center text-[8px] xs:text-[10px] text-amber-600/40 mb-2 xs:mb-3">
             {moveCount} coup{moveCount !== 1 ? 's' : ''} disponible{moveCount !== 1 ? 's' : ''}
           </p>
         )}
